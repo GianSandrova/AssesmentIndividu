@@ -1,56 +1,54 @@
-import { Sequelize, DataTypes } from "sequelize";
 import db from "../config/database.js";
-import Tenan from "./tenanModel.js";
-import Kasir from "./kasirModel.js";
+import { DataTypes } from 'sequelize';
 
-const Nota = db.sequelize.define(
-  "nota",
-  {
+const Nota = db.define('Nota', {
     KodeNota: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
     },
     KodeTenan: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Tenan,
-        key: "KodeTenan",
-      },
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Tenan',
+            key: 'KodeTenan',
+        },
     },
     KodeKasir: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Kasir,
-        key: "KodeKasir",
-      },
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Kasir',
+            key: 'KodeKasir',
+        },
     },
     TglNota: {
-      type: DataTypes.DATE,
-      allowNull: false,
+        type: DataTypes.DATE,
+        allowNull: false,
     },
     JamNota: {
-      type: DataTypes.DATE, // Ganti dengan DataTypes.DATE
-      allowNull: false,
+        type: DataTypes.TIME,
+        allowNull: false,
     },
     JumlahBelanja: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+        type: DataTypes.NUMERIC(10, 2),
+        allowNull: false,
     },
     Diskon: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+        type: DataTypes.NUMERIC(5, 2),
+        allowNull: false,
     },
     Total: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+        type: DataTypes.NUMERIC(10, 2),
+        allowNull: false,
     },
-  },
-  {
-    freezeTableName: true,
-  }
-);
+}, {
+    tableName: 'Nota',
+    timestamps: false,
+    freezeTableName: true
+});
 
 export default Nota;
+
+(async () => {
+    await db.sync();
+})();

@@ -1,32 +1,40 @@
-import { Sequelize, DataTypes } from "sequelize";
 import db from "../config/database.js";
+import { DataTypes } from 'sequelize';
 
-const Barang = db.sequelize.define('Barang', {
+const Barang = db.define('Barang', {
     KodeBarang: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
     },
     NamaBarang: {
-      type: DataTypes.STRING,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     Satuan: {
-      type: DataTypes.STRING,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     HargaSatuan: {
-      type: DataTypes.INTEGER,
+        type: DataTypes.NUMERIC(10),
+        allowNull: false,
     },
     Stok: {
-      type: DataTypes.INTEGER,
-    },
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
   },
-  {
-    freezeTableName: true,
-  }
-  );
+}, {
+    tableName: 'Barang',
+    timestamps: false,
+    freezeTableName: true
+});
 
 export default Barang;
 
 (async () => {
-    await db.sequelize.sync();
-  })();
+    await db.sync();
+})();

@@ -1,91 +1,74 @@
-import express from 'express';
-const router = express.Router();
 import BarangNota from '../models/barangNotaModel.js';
 
-export const getAllBarangNota = async (req, res) => {
-  try {
-    const response = await BarangNota.findAll();
-    res.status(200).json(response);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+export const createBarangNota = async (req, res) => {
+    try {
+        const barangNota = await BarangNota.create(req.body);
+        res.status(201).json({ msg: "BarangNota Created", data: barangNota });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan dalam menginput data barangNota.' });
+    }
+}
+
+export const showAllBarangNota = async (req, res) => {
+    try {
+        const response = await BarangNota.findAll();
+        res.status(200).json(response);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan dalam mengambil data barangNota.' });
+    }
+}
 
 export const getBarangNotaById = async (req, res) => {
-  try {
-    const { kodeNota, kodeBarang } = req.params;
-    const barangNota = await BarangNota.findOne({
-      where: { KodeNota: kodeNota, KodeBarang: kodeBarang },
-    });
-
-    if (!barangNota) {
-      return res.status(404).json({ msg: 'BarangNota not found' });
+    try {
+        const barangNota = await BarangNota.findOne({
+            where: {
+                KodeNota: req.params.KodeNota,
+                KodeBarang: req.params.KodeBarang
+            }
+        });
+        if (barangNota) {
+            res.status(200).json(barangNota);
+        } else {
+            res.status(404).json({ error: 'BarangNota not found' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan dalam mengambil data barangNota.' });
     }
-
-    res.status(200).json(barangNota);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
-
-export const createBarangNota = async (req, res) => {
-  const { KodeNota, KodeBarang, JumlahBarang, HargaSatuan, Jumlah } = req.body;
-
-  try {
-    const newBarangNota = await BarangNota.create({
-      KodeNota,
-      KodeBarang,
-      JumlahBarang,
-      HargaSatuan,
-      Jumlah,
-    });
-
-    res.status(201).json(newBarangNota);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
+}
 
 export const updateBarangNota = async (req, res) => {
-  try {
-    const { kodeNota, kodeBarang } = req.params;
-    const barangNota = await BarangNota.findOne({
-      where: { KodeNota: kodeNota, KodeBarang: kodeBarang },
-    });
-
-    if (!barangNota) {
-      return res.status(404).json({ msg: 'BarangNota not found' });
+    try {
+        const updatedBarangNota = await BarangNota.update(req.body, {
+            where: {
+                KodeNota: req.params.KodeNota,
+                KodeBarang: req.params.KodeBarang
+            }
+        });
+        res.status(200).json({ msg: "BarangNota updated", data: updatedBarangNota });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan saat mengupdate barangNota.' });
     }
-
-    await barangNota.update(req.body);
-
-    res.status(200).json(barangNota);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
+}
 
 export const deleteBarangNota = async (req, res) => {
-  try {
-    const { kodeNota, kodeBarang } = req.params;
-    const barangNota = await BarangNota.findOne({
-      where: { KodeNota: kodeNota, KodeBarang: kodeBarang },
-    });
-
-    if (!barangNota) {
-      return res.status(404).json({ msg: 'BarangNota not found' });
+    try {
+        const deletedBarangNota = await BarangNota.destroy({
+            where: {
+                KodeNota: req.params.KodeNota,
+                KodeBarang: req.params.KodeBarang
+            }
+        });
+        if (deletedBarangNota) {
+            res.status(200).json({ msg: "BarangNota deleted" });
+        } else {
+            res.status(404).json({ error: 'BarangNota not found' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan saat menghapus barangNota.' });
     }
-
-    await barangNota.destroy();
-
-    res.json({ msg: 'BarangNota deleted successfully' });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
-
+}

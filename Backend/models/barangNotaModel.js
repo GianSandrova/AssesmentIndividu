@@ -1,49 +1,42 @@
-import { Sequelize, DataTypes } from "sequelize";
 import db from "../config/database.js";
-import Nota from "./notaModel.js";
-import Barang from "./barangModel.js";
+import { DataTypes } from 'sequelize';
 
-const BarangNota = db.sequelize.define(
-  "barangnota",
-  {
+const BarangNota = db.define('BarangNota', {
     KodeNota: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      references: {
-        model: Nota,
-        key: "KodeNota",
-      },
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Nota',
+            key: 'KodeNota',
+        },
     },
     KodeBarang: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      references: {
-        model: Barang,
-        key: "KodeBarang",
-      },
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Barang',
+            key: 'KodeBarang',
+        },
     },
     JumlahBarang: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
     HargaSatuan: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+        type: DataTypes.NUMERIC(10, 2),
+        allowNull: false,
     },
     Jumlah: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+        type: DataTypes.NUMERIC(10, 2),
+        allowNull: false,
     },
-  },
-  {
+}, {
+    tableName: 'BarangNota',
+    timestamps: false,
     freezeTableName: true,
-  }
-);
+    primaryKey: true,
+});
 
 export default BarangNota;
 
 (async () => {
-  await BarangNota.sync({ force: true });
+    await db.sync();
 })();

@@ -1,79 +1,67 @@
 import Kasir from '../models/kasirModel.js';
 
-export const getAllKasir = async (req, res) => {
-  try {
-    const response = await Kasir.findAll();
-    res.status(200).json(response);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+export const createKasir = async (req, res) => {
+    try {
+        const kasir = await Kasir.create(req.body);
+        res.status(201).json({ msg: "Kasir Created", data: kasir });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan dalam menginput data kasir.' });
+    }
+}
+
+export const showAllKasir = async (req, res) => {
+    try {
+        const response = await Kasir.findAll();
+        res.status(200).json(response);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan dalam mengambil data kasir.' });
+    }
+}
 
 export const getKasirById = async (req, res) => {
-  try {
-    const { kodeKasir } = req.params;
-    const kasir = await Kasir.findByPk(kodeKasir);
-
-    if (!kasir) {
-      return res.status(404).json({ msg: 'Kasir not found' });
+    try {
+        const kasir = await Kasir.findByPk(req.params.KodeKasir);
+        if (kasir) {
+            res.status(200).json(kasir);
+        } else {
+            res.status(404).json({ error: 'Kasir not found' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan dalam mengambil data kasir.' });
     }
-
-    res.status(200).json(kasir);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
-
-export const createKasir = async (req, res) => {
-  const { Nama, HP } = req.body;
-
-  try {
-    const newKasir = await Kasir.create({
-      Nama,
-      HP,
-    });
-
-    res.status(201).json(newKasir);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
+}
 
 export const updateKasir = async (req, res) => {
-  try {
-    const { kodeKasir } = req.params;
-    const kasir = await Kasir.findByPk(kodeKasir);
-
-    if (!kasir) {
-      return res.status(404).json({ msg: 'Kasir not found' });
+    try {
+        const updatedKasir = await Kasir.update(req.body, {
+            where: {
+                KodeKasir: req.params.KodeKasir
+            }
+        });
+        res.status(200).json({ msg: "Kasir updated", data: updatedKasir });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan saat mengupdate kasir.' });
     }
-
-    await kasir.update(req.body);
-
-    res.status(200).json(kasir);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
+}
 
 export const deleteKasir = async (req, res) => {
-  try {
-    const { kodeKasir } = req.params;
-    const kasir = await Kasir.findByPk(kodeKasir);
-
-    if (!kasir) {
-      return res.status(404).json({ msg: 'Kasir not found' });
+    try {
+        const deletedKasir = await Kasir.destroy({
+            where: {
+                KodeKasir: req.params.KodeKasir
+            }
+        });
+        if (deletedKasir) {
+            res.status(200).json({ msg: "Kasir deleted" });
+        } else {
+            res.status(404).json({ error: 'Kasir not found' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Terjadi kesalahan saat menghapus kasir.' });
     }
-
-    await kasir.destroy();
-
-    res.json({ msg: 'Kasir deleted successfully' });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: 'Internal Server Error' });
-  }
-};
+}
